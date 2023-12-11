@@ -26,7 +26,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, rando
 accuracies = []
 algorithms = []
 times = []
-
+bestparamlist = []
 
 #this part is to get the features so we can modify them with the preprocessors
 numeric_features = x.select_dtypes(include=["int64", "float64"]).columns
@@ -103,6 +103,7 @@ for clf, (classifiers, params) in classifiers.items():
             bayesSearch.fit(x_train, y_train)
             t1 = time.time()
             best_params = bayesSearch.best_params_
+            bestparamlist.append("Best Paremeters found for {} ({}): {}".format(clf, ppName, best_params))
             Acc = bayesSearch.score(x_test, y_test)
             times.append(t1-t0)
             accuracies.append(Acc * 100)
@@ -157,6 +158,7 @@ for clf, (classifiers, params) in classifiers.items():
     bayesSearch.fit(x_train, y_train)
     t1 = time.time()
     best_params = bayesSearch.best_params_
+    bestparamlist.append("Best Paremeters found for {} (No Preprocessing): {}".format(clf, best_params))
     Acc = bayesSearch.score(x_test, y_test)
     times.append(t1-t0)
     accuracies.append(Acc * 100)
@@ -166,15 +168,21 @@ for clf, (classifiers, params) in classifiers.items():
 ################################################################################################################################################################################
 
 
-plt.figure(figsize = (10,4))
-plt.barh(algorithms, accuracies)
-plt.xlabel("Accuracy")
+plt.figure(figsize = (10,10))
+plt.barh(algorithms, accuracies, align = 'edge', height = 0.4)
+plt.barh(algorithms, times, align = 'edge', height = -0.4)
+
+plt.legend({'Accuracy (Percent)':'blue', 'Time (Seconds)':'orange'}, loc='lower right', bbox_to_anchor=(1.25, 0))
+plt.xlabel("Accuracy and Time")
 plt.ylabel("Algorithms")
-plt.title("Algorithms with Accuracy")
+plt.title("Algorithms with Accuracy/Time")
 plt.show()
 
 #code for this from https://stackoverflow.com/questions/48053979/print-2-lists-side-by-side user SCB
 sortedAlgList = "\n".join("{}: {:0.5f}% accuracy, {:0.5f} seconds".format(y, x, z) for x, y, z in sorted(zip(accuracies, algorithms, times), key = lambda x: (x[0], -x[2]), reverse = True))
-print("List of algorithms sorted best to worst:\n")
+print("Best Algorithm by accuracy and time is:", sortedAlgList.partition(":")[0], "\n")
+print("List of algorithms sorted best to worst:")
 print(sortedAlgList)
-print("Best Algorithm by accuracy and time is:", sortedAlgList.partition(":")[0])
+print("\nList of best hyperparameters per algorithm:")
+bestparamlist = "\n".join(bestparamlist)
+print(bestparamlist)
