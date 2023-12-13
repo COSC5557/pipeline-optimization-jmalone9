@@ -44,21 +44,24 @@ preprocessors = {
 classifiers = {
             "Random Forest": (RandomForestClassifier(random_state = 99),
             {
+            "classifier__bootstrap": [True, False],
             "classifier__max_depth": [25, 50, None], #default is none
-            "classifier__n_estimators": [100, 125, 150], #higher seemingly always better, default is 100
-            "classifier__min_samples_split": [2, 4, 6], #default values (the first one) seems to always be chosen
-            "classifier__min_samples_leaf": [1, 3, 5] #default values (the first one) seems to always be chosen
+            "classifier__n_estimators": [25, 50, 75, 100, 125, 150], #higher seemingly always better, default is 100
+            "classifier__min_samples_split": [2, 4, 6, 8], #default values (the first one) seems to always be chosen
+            "classifier__min_samples_leaf": [1, 3, 5, 7] #default values (the first one) seems to always be chosen
             }),
             "K-Nearest-Neighbors": (KNeighborsClassifier(),
             {
             "classifier__n_neighbors": [3, 4, 5, 6, 10], #default 5 used small numbers for this because it never picks the big ones
             "classifier__leaf_size": [10, 30, 50, 100, 200], #in this problem leaf size doesnt seem to affect accuracy
             "classifier__algorithm": ['ball_tree', 'kd_tree', 'brute', 'auto'],
-            "classifier__p": [1, 2]                 
+            "classifier__p": [1, 2],
+            "classifier__weights": ['uniform', 'distance']
             }),
             "Support Vector Machine": (SVC(random_state = 99),
             {
-            "classifier__C": [1, 10, 100]
+            "classifier__C": [1, 10, 100],
+            "classifier__kernel": ['rbf', 'sigmoid'] #other kernals just run endlessly, or atleast longer than 15~ minutes
             })
 
     }
@@ -98,7 +101,7 @@ for clf, (classifiers, params) in classifiers.items():
 ################################################################################################################################################################################
 #Hyperparameter Optimization
 ################################################################################################################################################################################
-            bayesSearch = BayesSearchCV(pipeline, params, n_jobs = 10, scoring = 'accuracy', verbose = 0, random_state = 99, n_iter = 15, cv = 5, return_train_score = True)
+            bayesSearch = BayesSearchCV(pipeline, params, n_jobs = 15, scoring = 'accuracy', verbose = 0, random_state = 99, n_iter = 15, cv = 5, return_train_score = True)
             t0 = time.time()
             bayesSearch.fit(x_train, y_train)
             t1 = time.time()
@@ -116,21 +119,24 @@ for clf, (classifiers, params) in classifiers.items():
 classifiers = {
             "Random Forest": (RandomForestClassifier(random_state = 99),
             {
+            "classifier__bootstrap": [True, False],
             "classifier__max_depth": [25, 50, None], #default is none
-            "classifier__n_estimators": [100, 125, 150], #higher seemingly always better, default is 100
-            "classifier__min_samples_split": [2, 4, 6], #default values (the first one) seems to always be chosen
-            "classifier__min_samples_leaf": [1, 3, 5] #default values (the first one) seems to always be chosen
+            "classifier__n_estimators": [25, 50, 75, 100, 125, 150], #higher seemingly always better, default is 100
+            "classifier__min_samples_split": [2, 4, 6, 8], #default values (the first one) seems to always be chosen
+            "classifier__min_samples_leaf": [1, 3, 5, 7] #default values (the first one) seems to always be chosen
             }),
             "K-Nearest-Neighbors": (KNeighborsClassifier(),
             {
             "classifier__n_neighbors": [3, 4, 5, 6, 10], #default 5 used small numbers for this because it never picks the big ones
             "classifier__leaf_size": [10, 30, 50, 100, 200], #in this problem leaf size doesnt seem to affect accuracy
             "classifier__algorithm": ['ball_tree', 'kd_tree', 'brute', 'auto'],
-            "classifier__p": [1, 2]                 
+            "classifier__p": [1, 2],
+            "classifier__weights": ['uniform', 'distance']
             }),
-            "Search Vector Machine": (SVC(random_state = 99),
+            "Support Vector Machine": (SVC(random_state = 99),
             {
-            "classifier__C": [1, 10, 100]
+            "classifier__C": [1, 10, 100],
+            "classifier__kernel": ['rbf', 'sigmoid'] #other kernals just run endlessly, or atleast longer than 15~ minutes
             })
 
     }
@@ -153,7 +159,7 @@ for clf, (classifiers, params) in classifiers.items():
 ################################################################################################################################################################################
 #Hyperparameter Optimization
 ################################################################################################################################################################################
-    bayesSearch = BayesSearchCV(pipeline, params, n_jobs = 10, scoring = 'accuracy', verbose = 0, random_state = 99, n_iter = 15, cv = 5, return_train_score = True)
+    bayesSearch = BayesSearchCV(pipeline, params,n_jobs = 15, scoring = 'accuracy', verbose = 0, random_state = 99, n_iter = 15, cv = 5, return_train_score = True)
     t0 = time.time()
     bayesSearch.fit(x_train, y_train)
     t1 = time.time()
